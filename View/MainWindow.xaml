@@ -1,0 +1,87 @@
+﻿<Window x:Class="TransportTasksGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TransportTasksGenerator.ViewModel"
+        mc:Ignorable="d"
+        Title="Генератор ТЗПП" Height="420" Width="600">
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe Print"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Margin" Value="3,5,5,3"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="FontFamily" Value="Segoe Print"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe Print"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe Print"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="2,3,10,0"/>
+        </Style>
+        <local:GeneratorViewModel x:Key="Genarator"/>
+    </Window.Resources>
+    <!--<StackPanel Orientation="Horizontal">-->
+    <Grid DataContext="{StaticResource Genarator}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Пункти" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна к-сть пунктів:" FontFamily="Segoe Print" FontSize="13"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TotalAmount}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="К-сть вихідних пунктів:" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SendersAmount}"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="К-сть пунктів призначення:" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RecieversAmount}"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text='К-сть "чистих" вихідних пунктів:' />
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ClearSendersAmount}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text='К-сть "чистих" пунктів призначення:' />
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ClearRecieversAmount}"/>
+
+        <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="Додаткові параметри" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15"/>
+        <CheckBox Grid.Row="7" Grid.ColumnSpan="2" Content="Збалансованість" HorizontalAlignment="Center" IsChecked="{Binding IsBalanced}"/>
+        <TextBlock Grid.Row="8" Grid.Column="0" Text='Межі значень a та b:' />
+        <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" >
+            <TextBlock Text="Від "/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromPostBound}"/>
+            <TextBlock Text="До "/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToPostBound}"/>
+        </StackPanel>
+        <TextBlock Grid.Row="9" Grid.Column="0" Text='Межі значень елементів матриці:' />
+        <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" >
+            <TextBlock Text="Від "/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromRoadBound}"/>
+            <TextBlock Text="До "/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToRoadBound}"/>
+        </StackPanel>
+        <TextBlock Grid.Row="10" Grid.Column="0" Text='К-сть задач:' />
+        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=TasksAmount}"/>
+        <Button Grid.Row="11" Grid.ColumnSpan="2" Content="Згенерувати" Command="{Binding GenerateCommand}" Background="{x:Null}" HorizontalAlignment="Center"/>
+    </Grid>
+    <!--</StackPanel>-->
+</Window>
