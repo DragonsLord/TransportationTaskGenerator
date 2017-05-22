@@ -18,7 +18,8 @@ namespace TransportTasksGenerator.Model
         public int recieversAmount = 3;
         public int clearSendersAmount = 0;
         public int clearRecieversAmount = 0;
-         
+
+        public int M = 1000000;
         public int tasksAmount = 1;
         public bool isBalanced = true;
         public Bound postBound = new Bound() { From = 10, To = 100 };

@@ -14,16 +14,6 @@ namespace TransportTasksGenerator.ViewModel
     {
         private Generator _generator = new Generator();
         private GenerationParametrs _parameters = new GenerationParametrs();
-        //private int _totalAmount = 12;
-        //private int _sendersAmount = 3;
-        //private int _recieversAmount = 3;
-        //private int _clearSendersAmount = 0;
-        //private int _clearRecieversAmount = 0;
-
-        //private int _tasksAmount = 1;
-        //private bool _isBalanced = true;
-        //private Bound _postBound = new Bound() { From = 10, To = 100};
-        //private Bound _roadBound = new Bound() { From = 1, To = 50 };
 
         public int TotalAmount
         {
@@ -90,7 +80,7 @@ namespace TransportTasksGenerator.ViewModel
         }
         private bool InputCheck()
         {
-            return false;
+            return true;
         }
         public GeneratorViewModel()
         {

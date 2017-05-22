@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace TransportTasksGenerator.Model
 {
@@ -12,9 +13,16 @@ namespace TransportTasksGenerator.Model
         private int[] _b;
         private int[,] _restrictions;
 
-        public int[] A => _a;
-        public int[] B => _b;
+        public int[] Senders => _a;
+        public int[] Recievers => _b;
         public int[,] Restrictions => _restrictions;
+        public Image Graph { get; set; } 
 
+        public TransportationTask(int[] senders, int[] recievers, int[,] restricts)
+        {
+            _a = senders;
+            _b = recievers;
+            _restrictions = restricts;
+        }
     }
 }

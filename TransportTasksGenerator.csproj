@@ -80,7 +80,10 @@
     </Compile>
     <Compile Include="Model\GenerationParametrs.cs" />
     <Compile Include="Model\Generator.cs" />
+    <Compile Include="Model\Implementations\TZPPGenerator.cs" />
+    <Compile Include="Model\Implementations\TZPPSolver.cs" />
     <Compile Include="Model\Interfaces\IGraphBuilder.cs" />
+    <Compile Include="Model\Interfaces\ISaver.cs" />
     <Compile Include="Model\Interfaces\ITaskGenerator.cs" />
     <Compile Include="Model\Interfaces\ITaskSolver.cs" />
     <Compile Include="Model\SolvedTask.cs" />
@@ -118,8 +121,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Implementations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
