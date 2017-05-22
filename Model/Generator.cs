@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TransportTasksGenerator.Model.Interfaces;
 using TransportTasksGenerator.Model.Implementations;
+using TransportTasksGenerator.Model.Interfaces;
 
 namespace TransportTasksGenerator.Model
 {
     public class Generator
     {
         public ITaskGenerator TaskGenerator { get; set; } = new TZPPGenerator();
-        public IGraphBuilder GraphBuider { get; set; }
+        public IGraphBuilder GraphBuider { get; set; } = new GraphBuilder();
         public ITaskSolver TaskSolver { get; set; } = new TZPPSolver();
         public ISaver Saver { get; set; }
 
@@ -21,11 +21,11 @@ namespace TransportTasksGenerator.Model
             List<SolvedTask> answers = new List<SolvedTask>();
             foreach (var task in tasks)
             {
-                Task.Run(() => task.Graph = GraphBuider.Build(task.Restrictions));
+                Task.Run(() => GraphBuider.Build(task.Restrictions, "task"));
                 var result = TaskSolver.Solve(task);
-                Task.Run(() => result.Graph = GraphBuider.Build(result.Roads));
+                Task.Run(() => GraphBuider.Build(result.Roads, "result"));
             }
-            Saver.Save(tasks, answers);
+            //Saver.Save(tasks, answers);
         }
     }
 }

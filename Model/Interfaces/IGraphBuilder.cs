@@ -9,6 +9,6 @@ namespace TransportTasksGenerator.Model.Interfaces
 {
     public interface IGraphBuilder
     {
-        Image Build(int[,] matrix);
+        void Build(int[,] matrix, string path);
     }
 }
