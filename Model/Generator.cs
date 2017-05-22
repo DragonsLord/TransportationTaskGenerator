@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TransportTasksGenerator.Model.Implementations;
 using TransportTasksGenerator.Model.Interfaces;
 
 namespace TransportTasksGenerator.Model
@@ -12,7 +13,6 @@ namespace TransportTasksGenerator.Model
         public ITaskGenerator TaskGenerator { get; set; }
         public IGraphBuilder GraphBuider { get; set; }
         public ITaskSolver TaskSolver { get; set; }
-
         public void Generate(GenerationParametrs gen_params, string filepath)
         {
             var tasks = TaskGenerator.Generate(gen_params);
