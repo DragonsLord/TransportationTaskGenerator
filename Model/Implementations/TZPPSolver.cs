@@ -124,10 +124,16 @@ namespace TransportTasksGenerator.Model.Implementations
                     min = recievers[pos.j];
                     columns.Remove(pos.j);
                 }
-                else
+                else if (senders[pos.i] < recievers[pos.j])
                 {
                     min = senders[pos.i];
                     rows.Remove(pos.i);
+                }
+                else {
+                    min = senders[pos.i];
+                    if (columns.Count > rows.Count)
+                        columns.Remove(pos.j);
+                    else rows.Remove(pos.i);
                 }
                 m.Values[pos.i, pos.j] = min;
                 senders[pos.i] -= min;
@@ -143,8 +149,9 @@ namespace TransportTasksGenerator.Model.Implementations
             for (int i = 0; i < m.Values.GetLength(0); i++)
                 for (int j = 0; j < m.Values.GetLength(1); j++)
                 {
-                    if (m.Values[i, j] == 0)
-                        n.Add(new Position() { i = i, j = j }, 0);
+                    Position p = new Position() { i = i, j = j };
+                    if (!m.X.Contains(p))
+                        n.Add(p, 0);
                 }
             bool end = false;
             do
@@ -215,6 +222,7 @@ namespace TransportTasksGenerator.Model.Implementations
                             {
                                 var p = poss.Find(item => item.i == i);
                                 columns[p.j]--;
+                                rows[p.i]--;
                                 poss.Remove(p);
                                 delete = true;
                             }
@@ -225,6 +233,7 @@ namespace TransportTasksGenerator.Model.Implementations
                             {
                                 var p = poss.Find(item => item.j == j);
                                 rows[p.i]--;
+                                columns[p.j]--;
                                 poss.Remove(p);
                                 delete = true;
                             }
@@ -233,23 +242,23 @@ namespace TransportTasksGenerator.Model.Implementations
                     #endregion
                     #region Apply changes to cycle
                     var plus = new List<Position>();
-                    var minus = new List<Position>() { max_z.Key};
-                    int curr_column = max_z.Key.i, curr_row = max_z.Key.j, min_x = int.MinValue;
+                    var minus = new List<Position>();
+                    int curr_column = max_z.Key.j, curr_row = max_z.Key.i, min_x = int.MaxValue;
                     Position min_x_pos = max_z.Key;
                     do
                     {
-                        var p_r = poss.Find(p => p.j == curr_row && p.i != curr_column);
+                        var p_r = poss.Find(p => p.i == curr_row && p.j != curr_column);
                         minus.Add(p_r);
                         if (m.Values[p_r.i,p_r.j] < min_x)
                         {
                             min_x = m.Values[p_r.i, p_r.j];
                             min_x_pos = p_r;
                         }
-                        var p_c = poss.Find(p => p.i == p_r.i && p.j != p_r.j);
+                        var p_c = poss.Find(p => p.i != p_r.i && p.j == p_r.j);
                         plus.Add(p_c);
                         curr_column = p_c.j;
                         curr_row = p_c.i;
-                    } while (curr_column != max_z.Key.i);
+                    } while (curr_column != max_z.Key.j);
 
                     for (int k = 0; k < plus.Count; k++)
                     {
