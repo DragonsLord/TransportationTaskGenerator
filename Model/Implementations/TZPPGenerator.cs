@@ -78,6 +78,22 @@ namespace TransportTasksGenerator.Model.Implementations
                 for (int j = 0; j < parametrs.totalAmount; j++)
                     c[parametrs.totalAmount - 1 - i, j] = parametrs.M;
             }
+
+            // if there are intermediate post forbid roads from A to B and also From B to A as unneccessery 
+            if (parametrs.totalAmount > parametrs.recieversAmount + parametrs.sendersAmount)
+            {
+                for (int i = 0; i < parametrs.sendersAmount; i++)
+                {
+                    for (int j = parametrs.totalAmount - parametrs.recieversAmount; j < parametrs.totalAmount; j++)
+                    {
+                        if (i != j)
+                        {
+                            c[i, j] = parametrs.M;
+                            c[j, i] = parametrs.M;
+                        }
+                    }
+                }
+            }
             for (int i = 0; i < parametrs.totalAmount; i++)
                 c[i, i] = 0;
 
