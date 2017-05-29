@@ -20,7 +20,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 var posts = GeneratePosts(parametrs.sendersAmount, parametrs.recieversAmount, parametrs.isBalanced, parametrs.postBound);
                 int[,] c = GetRestrictions(parametrs);
 
-                tasks.Add(new TransportationTask(posts.A, posts.B, c));
+                tasks.Add(new TransportationTask(posts.A, posts.B, c) { M = parametrs.M});
             }
 
             return tasks;
@@ -61,7 +61,12 @@ namespace TransportTasksGenerator.Model.Implementations
             for (int i = 0; i < parametrs.totalAmount; i++)
             {
                 for (int j = 0; j < parametrs.totalAmount; j++)
-                    c[i, j] = rand.Next(parametrs.roadBound.From, parametrs.roadBound.To);
+                {
+                    int prob = rand.Next(0, 100);
+                    if (prob < 80 || i < parametrs.sendersAmount || j > (parametrs.totalAmount - parametrs.recieversAmount)) // For senders and recievers always generate road
+                        c[i, j] = rand.Next(parametrs.roadBound.From, parametrs.roadBound.To);
+                    else c[i, j] = parametrs.M;
+                }
             }
             for (int i = 0; i < parametrs.clearSendersAmount; i++)
             {

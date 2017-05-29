@@ -85,6 +85,8 @@ namespace TransportTasksGenerator.Model.Implementations
                 for (int i = 0; i < task.Recievers.Length; i++)
                     m.RecieverBounds[m.RecieverBounds.Count - task.Recievers.Length + i] += task.Recievers[i];
             }
+
+            task.D = d;
         }
 
         private void CalcFirstIteration()
@@ -157,8 +159,8 @@ namespace TransportTasksGenerator.Model.Implementations
             do
             {
                 #region Potencials
-                int[] u = Enumerable.Repeat<int>(-1, m.C.GetLength(0)).ToArray();
-                int[] v = Enumerable.Repeat<int>(-1, m.C.GetLength(1)).ToArray();
+                int?[] u = Enumerable.Repeat<int?>(null, m.C.GetLength(0)).ToArray();
+                int?[] v = Enumerable.Repeat<int?>(null, m.C.GetLength(1)).ToArray();
                 u[0] = 0;
                 Queue<Position> queue = new Queue<Position>();
                 queue.Enqueue(new Position() { i = 0, j = -1 });
@@ -169,7 +171,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     {
                         for (int j = 0; j < m.C.GetLength(1); j++)
                         {
-                            if ( m.X.Exists(pos => pos.i == p.i && pos.j == j) && v[j] == -1)
+                            if ( m.X.Exists(pos => pos.i == p.i && pos.j == j) && v[j] == null)
                             {
                                 v[j] = m.C[p.i, j] - u[p.i];
                                 queue.Enqueue(new Position() { i = -1, j = j });
@@ -180,7 +182,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     {
                         for (int i = 0; i < m.C.GetLength(0); i++)
                         {
-                            if (m.X.Exists(pos => pos.i == i && pos.j == p.j) && u[i] == -1)
+                            if (m.X.Exists(pos => pos.i == i && pos.j == p.j) && u[i] == null)
                             {
                                 u[i] = m.C[i, p.j] - v[p.j];
                                 queue.Enqueue(new Position() { i = i, j = -1 });
@@ -193,7 +195,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 for (int i = 0; i < n.Count; i++)
                 {
                     var key = n.Keys.ElementAt(i);
-                    n[key] = u[key.i] + v[key.j] - m.C[key.i, key.j];
+                    n[key] = u[key.i].Value + v[key.j].Value - m.C[key.i, key.j];
                 }
 
                 var max_z = n.Aggregate((l,r) => l.Value > r.Value ? l : r); // get max y value of Xn
