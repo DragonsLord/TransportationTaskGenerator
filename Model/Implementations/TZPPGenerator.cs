@@ -10,7 +10,7 @@ namespace TransportTasksGenerator.Model.Implementations
 {
     public class TZPPGenerator : ITaskGenerator
     {
-
+        private Random rand = new Random();
         public IEnumerable<TransportationTask> Generate(GenerationParametrs parametrs)
         {
             var tasks = new List<TransportationTask>();
@@ -32,7 +32,6 @@ namespace TransportTasksGenerator.Model.Implementations
             int[] b = new int[b_count];
 
             int d = 0;
-            Random rand = new Random();
 
             for (int i = 0; i < a_count; i++)
             {
@@ -42,7 +41,7 @@ namespace TransportTasksGenerator.Model.Implementations
 
             for (int i = 0; i < b_count-1; i++)
             {
-                b[i] = rand.Next(0, d - (b_count - i - 1));
+                b[i] = rand.Next(bound.From, d - (b_count - i - 1) * bound.From);
                 d -= b[i];
             }
 
@@ -55,7 +54,6 @@ namespace TransportTasksGenerator.Model.Implementations
 
         private int[,] GetRestrictions(GenerationParametrs parametrs)
         {
-            Random rand = new Random();
             int[,] c = new int[parametrs.totalAmount, parametrs.totalAmount];
 
             for (int i = 0; i < parametrs.totalAmount; i++)

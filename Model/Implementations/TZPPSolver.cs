@@ -287,8 +287,7 @@ namespace TransportTasksGenerator.Model.Implementations
 
             CalcFirstIteration();
             PotencialMethod();
-
-            return new SolvedTask(task, m.Values);
+            return new SolvedTask(task, m.Values) { BalancedMatrix = m.C, Recievers = m.RecieverBounds.ToArray(), Senders = m.SenderBounds.ToArray()};
         }
     }
 }
