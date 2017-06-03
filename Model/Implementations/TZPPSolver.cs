@@ -50,7 +50,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 m.RecieverBounds = Enumerable.Repeat<int>(d, m.C.GetLength(1)).ToList();
                 for (int i = 0; i < task.Senders.Length; i++)
                     m.SenderBounds[i] += task.Senders[i];
-                m.SenderBounds[m.SenderBounds.Count - 1] += d_b - d_a;
+                m.SenderBounds[m.SenderBounds.Count - 1] = d_b - d_a;
                 for (int i = 0; i < task.Recievers.Length; i++)
                     m.RecieverBounds[m.RecieverBounds.Count - task.Recievers.Length + i] += task.Recievers[i];
             }
@@ -73,7 +73,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     m.SenderBounds[i] += task.Senders[i];
                 for (int i = 0; i < task.Recievers.Length; i++)
                     m.RecieverBounds[m.RecieverBounds.Count - task.Recievers.Length - 1 + i] += task.Recievers[i];
-                m.RecieverBounds[m.RecieverBounds.Count - 1] += d_a - d_b;
+                m.RecieverBounds[m.RecieverBounds.Count - 1] = d_a - d_b;
             }
             else
             {

@@ -11,6 +11,7 @@ using System.ComponentModel;
 
 namespace TransportTasksGenerator.ViewModel
 {
+    public enum WorkerStatus { Working, Finished}
     public class GeneratorViewModel : ViewModelBase, IDataErrorInfo
     {
         private Generator _generator = new Generator();
@@ -126,11 +127,11 @@ namespace TransportTasksGenerator.ViewModel
                             Error = "Повинно бути додатнє значення та не більше загальної к-сті пунктів";
                         break;
                     case "ClearSendersAmount":
-                        if (ClearSendersAmount <= 0 || ClearSendersAmount > SendersAmount)
+                        if (ClearSendersAmount < 0 || ClearSendersAmount > SendersAmount)
                             Error = "Значення не може перевищуваати к-сть вихідних пунктів";
                         break;
                     case "ClearRecieversAmount":
-                        if (ClearRecieversAmount <= 0 || ClearRecieversAmount > RecieversAmount)
+                        if (ClearRecieversAmount < 0 || ClearRecieversAmount > RecieversAmount)
                             Error = "Значення не може перевищуваати к-сть вхідних пунктів";
                         break;
                     case "FromPostBound":
@@ -163,8 +164,12 @@ namespace TransportTasksGenerator.ViewModel
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 var result = dialog.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK)
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    MessengerInstance.Send<WorkerStatus>(WorkerStatus.Working);
                     await Task.Run(() => _generator.Generate(_parameters, dialog.SelectedPath));
+                    MessengerInstance.Send<WorkerStatus>(WorkerStatus.Finished);
+                    MessengerInstance.Send<string>("Генерація завершена");
+                }
             }
         }
         private bool InputCheck()
@@ -175,7 +180,7 @@ namespace TransportTasksGenerator.ViewModel
             //c2 = FromPostBound < ToPostBound && FromRoadBound < ToRoadBound;
             //c3 = TasksAmount <= 100;
             //c0 = TotalAmount > 0 && SendersAmount > 0 && RecieversAmount > 0
-            //    && ClearRecieversAmount > 0 && ClearSendersAmount > 0 && TasksAmount > 0;
+            //    && ClearRecieversAmount >= 0 && ClearSendersAmount >= 0 && TasksAmount > 0;
             return String.IsNullOrEmpty(Error);
         }
         public GeneratorViewModel()
