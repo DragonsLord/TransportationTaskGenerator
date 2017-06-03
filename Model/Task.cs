@@ -25,45 +25,5 @@ namespace TransportTasksGenerator.Model
             _b = recievers;
             _restrictions = restricts;
         }
-
-        public IEnumerable<int> GetColumnsToDraw()
-        {
-            var columns = new List<int>();
-            for (int j = 0; j < _restrictions.GetLength(1); j++)
-            {
-                bool add = false;
-                for (int i = 0; i < _restrictions.GetLength(0); i++)
-                {
-                    if (_restrictions[i, j] != M && i != j)
-                    {
-                        add = true;
-                        break;
-                    }
-                }
-                if (add)
-                    columns.Add(j);
-            }
-            return columns;
-        }
-
-        public IEnumerable<int> GetRowsToDraw()
-        {
-            var rows = new List<int>();
-            for (int i = 0; i < _restrictions.GetLength(0); i++)
-            {
-                bool add = false;
-                for (int j = 0; j < _restrictions.GetLength(1); j++)
-                {
-                    if (_restrictions[i, j] != M && i != j)
-                    {
-                        add = true;
-                        break;
-                    }
-                }
-                if (add)
-                    rows.Add(i);
-            }
-            return rows;
-        }
     }
 }

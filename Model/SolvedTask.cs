@@ -13,6 +13,9 @@ namespace TransportTasksGenerator.Model
         public int Value { get; private set; } = 0;
         private int[,] roads;
         public int[,] Roads => roads;
+        public int[,] BalancedMatrix { get; set; }
+        public int[] Senders { get; set; }
+        public int[] Recievers { get; set; }
 
         public SolvedTask(TransportationTask task, int[,] answer)
         {
@@ -26,6 +29,47 @@ namespace TransportTasksGenerator.Model
                     if (i!=j) Value += answer[i, j] * task.Restrictions[i, j];
                 }
             }
+        }
+
+
+        public IEnumerable<int> GetColumnsToDraw()
+        {
+            var columns = new List<int>();
+            for (int j = 0; j < BalancedMatrix.GetLength(1); j++)
+            {
+                bool add = false;
+                for (int i = 0; i < BalancedMatrix.GetLength(0); i++)
+                {
+                    if (BalancedMatrix[i, j] != Task.M && i != j)
+                    {
+                        add = true;
+                        break;
+                    }
+                }
+                if (add)
+                    columns.Add(j);
+            }
+            return columns;
+        }
+
+        public IEnumerable<int> GetRowsToDraw()
+        {
+            var rows = new List<int>();
+            for (int i = 0; i < BalancedMatrix.GetLength(0); i++)
+            {
+                bool add = false;
+                for (int j = 0; j < BalancedMatrix.GetLength(1); j++)
+                {
+                    if (BalancedMatrix[i, j] != Task.M && i != j)
+                    {
+                        add = true;
+                        break;
+                    }
+                }
+                if (add)
+                    rows.Add(i);
+            }
+            return rows;
         }
     }
 }
