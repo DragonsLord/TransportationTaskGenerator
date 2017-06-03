@@ -18,7 +18,7 @@ namespace TransportTasksGenerator.Model.Implementations
 {
     class GraphBuilder : IGraphBuilder
     {
-        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/font/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         static readonly iTextSharp.text.Font cellStyle = new iTextSharp.text.Font(baseFont, 16, 0, BaseColor.BLACK);
         private int _countA;
         private int _countB;

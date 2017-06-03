@@ -34,13 +34,14 @@ namespace TransportTasksGenerator.Model
 
         public IEnumerable<int> GetColumnsToDraw()
         {
+            var r = BalancedMatrix.GetLength(0) - BalancedMatrix.GetLength(1);
             var columns = new List<int>();
             for (int j = 0; j < BalancedMatrix.GetLength(1); j++)
             {
                 bool add = false;
                 for (int i = 0; i < BalancedMatrix.GetLength(0); i++)
                 {
-                    if (BalancedMatrix[i, j] != Task.M && i != j)
+                    if (BalancedMatrix[i, j] != Task.M && i != j && i < BalancedMatrix.GetLength(0) - r)
                     {
                         add = true;
                         break;
@@ -54,13 +55,14 @@ namespace TransportTasksGenerator.Model
 
         public IEnumerable<int> GetRowsToDraw()
         {
+            var r = BalancedMatrix.GetLength(1) - BalancedMatrix.GetLength(0);
             var rows = new List<int>();
             for (int i = 0; i < BalancedMatrix.GetLength(0); i++)
             {
                 bool add = false;
                 for (int j = 0; j < BalancedMatrix.GetLength(1); j++)
                 {
-                    if (BalancedMatrix[i, j] != Task.M && i != j)
+                    if (BalancedMatrix[i, j] != Task.M && i != j && j < BalancedMatrix.GetLength(1) - r)
                     {
                         add = true;
                         break;

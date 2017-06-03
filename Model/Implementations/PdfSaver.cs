@@ -13,7 +13,7 @@ namespace TransportTasksGenerator.Model.Implementations
     class PdfSaver : ISaver
     {
         private string folder = "Results";
-        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/font/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         static readonly Font cellStyle = new Font(baseFont, 12, 0, BaseColor.BLACK);
         static readonly Font paragraphStyle = new Font(baseFont, 14, 1, BaseColor.BLACK);
         private IEnumerable<SolvedTask> answers;
@@ -165,40 +165,40 @@ namespace TransportTasksGenerator.Model.Implementations
         private PdfPTable GetTable(SolvedTask task,int a,int b,int buffer)
         {
 
-            PdfPTable table = new PdfPTable(task.Task.GetColumnsToDraw().Count() + 2);
+            PdfPTable table = new PdfPTable(task.GetColumnsToDraw().Count() + 2);
             table.HorizontalAlignment = Element.ALIGN_CENTER;
 
             table.AddCell(GetCell(" "));
-            foreach (var item in task.Task.GetColumnsToDraw())
+            foreach (var item in task.GetColumnsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(item, task)));
             }
            
             table.AddCell(GetCell(" "));
-            foreach (var i in task.Task.GetRowsToDraw())
+            foreach (var i in task.GetRowsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
-                foreach (var j in task.Task.GetColumnsToDraw())
+                foreach (var j in task.GetColumnsToDraw())
                 {
-                    if (task.Task.Restrictions[i, j] == 1000000)
+                    if (task.BalancedMatrix[i, j] == 1000000)
                     {
 
                         table.AddCell(GetCell("M"));
                     }
                     else
                     {
-                        table.AddCell(GetCell(task.Task.Restrictions[i, j].ToString()));
+                        table.AddCell(GetCell(task.BalancedMatrix[i, j].ToString()));
                     }
                 }
-                if (i < task.Task.Senders.Length)
+                if (i < task.Senders.Length)
                 {
                     if (i < a)
                     {
-                        table.AddCell(GetCell(task.Task.Senders[i].ToString()));
+                        table.AddCell(GetCell(task.Senders[i].ToString()));
                     }
                     else
                     {
-                        table.AddCell(GetCell((task.Task.Senders[i] + buffer).ToString()));
+                        table.AddCell(GetCell((task.Senders[i] + buffer).ToString()));
                     }
                 }
                 else
@@ -207,17 +207,17 @@ namespace TransportTasksGenerator.Model.Implementations
                 }
             }
             table.AddCell(GetCell(" "));
-            foreach (var i in task.Task.GetColumnsToDraw())
+            foreach (var i in task.GetColumnsToDraw())
             {
-                if (i >= task.Task.Restrictions.GetLength(1) - task.Task.Recievers.Length)
+                if (i >= task.BalancedMatrix.GetLength(1) - task.Recievers.Length)
                 {
-                    if (i >= task.Task.Restrictions.GetLength(1) - b)
+                    if (i >= task.BalancedMatrix.GetLength(1) - b)
                     {
-                        table.AddCell(GetCell((task.Task.Recievers[i - task.Task.Restrictions.GetLength(1) + task.Task.Recievers.Length]).ToString()));
+                        table.AddCell(GetCell((task.Recievers[i - task.BalancedMatrix.GetLength(1) + task.Task.Recievers.Length]).ToString()));
                     }
                     else
                     {
-                        table.AddCell(GetCell((task.Task.Recievers[i - task.Task.Restrictions.GetLength(1) + task.Task.Recievers.Length] + buffer).ToString()));
+                        table.AddCell(GetCell((task.Recievers[i - task.BalancedMatrix.GetLength(1) + task.Recievers.Length] + buffer).ToString()));
                     }
                 }
                 else
@@ -231,21 +231,21 @@ namespace TransportTasksGenerator.Model.Implementations
 
         private PdfPTable GetTableRoads(SolvedTask task)
         {
-            PdfPTable table = new PdfPTable(task.Task.GetColumnsToDraw().Count() + 1);
+            PdfPTable table = new PdfPTable(task.GetColumnsToDraw().Count() + 1);
             table.DefaultCell.Border = iTextSharp.text.Rectangle.NO_BORDER;
             table.DefaultCell.PaddingTop = 10;
             table.DefaultCell.PaddingBottom = 10;
             table.HorizontalAlignment = Element.ALIGN_CENTER;
 
             table.AddCell(GetCell(" "));
-            foreach (var i in task.Task.GetColumnsToDraw())
+            foreach (var i in task.GetColumnsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
             }
-            foreach (var i in task.Task.GetRowsToDraw())
+            foreach (var i in task.GetRowsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
-                foreach (var j in task.Task.GetColumnsToDraw())
+                foreach (var j in task.GetColumnsToDraw())
                 {
                     if (task.Roads[i, j] == 1000000)
                     {
