@@ -12,20 +12,23 @@ namespace TransportTasksGenerator.Model.Implementations
 {
     class PdfSaver : ISaver
     {
+        private string folder = "Results";
         static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/font/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         static readonly Font cellStyle = new Font(baseFont, 12, 0, BaseColor.BLACK);
         static readonly Font paragraphStyle = new Font(baseFont, 14, 1, BaseColor.BLACK);
         private IEnumerable<SolvedTask> answers;
-        public void Save(IEnumerable<SolvedTask> answers,int clearA,int clearB)
+        public void Save(IEnumerable<SolvedTask> answers,int clearA,int clearB,string folderpath)
         {
             this.answers = answers;
+            folder = folderpath;
             SaveTask();
             SaveAnswer(clearA, clearB);
+
         }
         public void SaveTask()
         {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}/task.pdf";
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            string path = $"{folder}/task.pdf";
+            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 Document doc = new Document(PageSize.A4);
                 PdfWriter writer = PdfWriter.GetInstance(doc, fs);
@@ -89,8 +92,8 @@ namespace TransportTasksGenerator.Model.Implementations
         }
         private void SaveAnswer(int clearA, int clearB)
         {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}/answer.pdf";
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            string path = $"{folder}/answer.pdf";
+            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 Document doc = new Document(PageSize.A4);
                 PdfWriter writer = PdfWriter.GetInstance(doc, fs);
@@ -161,23 +164,22 @@ namespace TransportTasksGenerator.Model.Implementations
         }
         private PdfPTable GetTable(SolvedTask task,int a,int b,int buffer)
         {
-            PdfPTable table = new PdfPTable(task.Task.Restrictions.GetLength(0)+2);
+
+            PdfPTable table = new PdfPTable(task.Task.GetColumnsToDraw().Count() + 2);
             table.HorizontalAlignment = Element.ALIGN_CENTER;
 
             table.AddCell(GetCell(" "));
-            for (int i = 0; i < task.Task.Restrictions.GetLength(0); i++)
+            foreach (var item in task.Task.GetColumnsToDraw())
+            {
+                table.AddCell(GetCell(GetLabelForNode(item, task)));
+            }
+           
+            table.AddCell(GetCell(" "));
+            foreach (var i in task.Task.GetRowsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
-            }
-            table.AddCell(GetCell(" "));
-            for (int i = 0; i < task.Task.Restrictions.GetLength(0); i++)
-            {
-                for (int j = 0; j < task.Task.Restrictions.GetLength(1); j++)
+                foreach (var j in task.Task.GetColumnsToDraw())
                 {
-                    if (j < 1)
-                    {
-                        table.AddCell(GetCell(GetLabelForNode(i, task)));
-                    }
                     if (task.Task.Restrictions[i, j] == 1000000)
                     {
 
@@ -205,7 +207,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 }
             }
             table.AddCell(GetCell(" "));
-            for (int i = 0; i < task.Task.Restrictions.GetLength(1); i++)
+            foreach (var i in task.Task.GetColumnsToDraw())
             {
                 if (i >= task.Task.Restrictions.GetLength(1) - task.Task.Recievers.Length)
                 {
@@ -229,25 +231,22 @@ namespace TransportTasksGenerator.Model.Implementations
 
         private PdfPTable GetTableRoads(SolvedTask task)
         {
-            PdfPTable table = new PdfPTable(task.Roads.GetLength(1) + 1);
+            PdfPTable table = new PdfPTable(task.Task.GetColumnsToDraw().Count() + 1);
             table.DefaultCell.Border = iTextSharp.text.Rectangle.NO_BORDER;
             table.DefaultCell.PaddingTop = 10;
             table.DefaultCell.PaddingBottom = 10;
             table.HorizontalAlignment = Element.ALIGN_CENTER;
 
             table.AddCell(GetCell(" "));
-            for (int i = 0; i < task.Roads.GetLength(1); i++)
+            foreach (var i in task.Task.GetColumnsToDraw())
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
             }
-            for (int i = 0; i < task.Roads.GetLength(0); i++)
+            foreach (var i in task.Task.GetRowsToDraw())
             {
-                for (int j = 0; j < task.Roads.GetLength(1); j++)
+                table.AddCell(GetCell(GetLabelForNode(i, task)));
+                foreach (var j in task.Task.GetColumnsToDraw())
                 {
-                    if (j < 1)
-                    {
-                        table.AddCell(GetCell(GetLabelForNode(i, task)));
-                    }
                     if (task.Roads[i, j] == 1000000)
                     {
 
@@ -264,12 +263,16 @@ namespace TransportTasksGenerator.Model.Implementations
 
         private string GetLabelForNode(int number,SolvedTask task)
         {
+            int fict = task.Task.Restrictions.GetLength(0) > task.Task.Restrictions.GetLength(1) ? task.Task.Restrictions.GetLength(0) : task.Task.Restrictions.GetLength(1);
+
+            if (number==fict ) return(Convert.ToChar(70).ToString() + 1).ToString();
             //Senders
-            if (number < task.Task.Senders.Length) return (Convert.ToChar(65).ToString() + (number + 1)).ToString();
+            else if (number < task.Task.Senders.Length) return (Convert.ToChar(65).ToString() + (number + 1)).ToString();
             //Intermediate
             else if (task.Task.Restrictions.GetLength(0) - task.Task.Recievers.Length <= number) return (Convert.ToChar(66).ToString() + (number + 1 - (task.Task.Restrictions.GetLength(0) - task.Task.Recievers.Length))).ToString();
             //Recievers
             else return (Convert.ToChar(67).ToString() + (number + 1 - task.Task.Senders.Length)).ToString();
+            
         }
     }
 }
