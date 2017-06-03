@@ -13,11 +13,11 @@ namespace TransportTasksGenerator.Model
     }
     public class GenerationParametrs
     {
-        public int totalAmount = 12;
-        public int sendersAmount = 3;
-        public int recieversAmount = 3;
-        public int clearSendersAmount = 0;
-        public int clearRecieversAmount = 0;
+        public int totalAmount = 6;
+        public int sendersAmount = 2;
+        public int recieversAmount = 2;
+        public int clearSendersAmount = 2;
+        public int clearRecieversAmount = 2;
 
         public int M = 1000000;
         public int tasksAmount = 1;

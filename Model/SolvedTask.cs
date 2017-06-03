@@ -13,7 +13,6 @@ namespace TransportTasksGenerator.Model
         public int Value { get; private set; } = 0;
         private int[,] roads;
         public int[,] Roads => roads;
-        public Image Graph { get; set; }
 
         public SolvedTask(TransportationTask task, int[,] answer)
         {
@@ -24,7 +23,7 @@ namespace TransportTasksGenerator.Model
             {
                 for (int j = 0; j < task.Restrictions.GetLength(1); j++)
                 {
-                    Value += answer[i, j] * task.Restrictions[i, j];
+                    if (i!=j) Value += answer[i, j] * task.Restrictions[i, j];
                 }
             }
         }

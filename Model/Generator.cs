@@ -11,9 +11,8 @@ namespace TransportTasksGenerator.Model
     public class Generator
     {
         public ITaskGenerator TaskGenerator { get; set; } = new TZPPGenerator();
-        public IGraphBuilder GraphBuider { get; set; } = new GraphBuilder();
         public ITaskSolver TaskSolver { get; set; } = new TZPPSolver();
-        public ISaver Saver { get; set; }
+        public ISaver Saver { get; set; } = new PdfSaver();
 
         public void Generate(GenerationParametrs gen_params, string filepath)
         {
@@ -21,11 +20,9 @@ namespace TransportTasksGenerator.Model
             List<SolvedTask> answers = new List<SolvedTask>();
             foreach (var task in tasks)
             {
-                Task.Run(() => GraphBuider.Build(task.Restrictions, "task"));
-                var result = TaskSolver.Solve(task);
-                Task.Run(() => GraphBuider.Build(result.Roads, "result"));
+                answers.Add(TaskSolver.Solve(task));
             }
-            //Saver.Save(tasks, answers);
+            Saver.Save(answers,gen_params.clearRecieversAmount,gen_params.clearSendersAmount);
         }
     }
 }

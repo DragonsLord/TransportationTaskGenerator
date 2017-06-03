@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace TransportTasksGenerator.Model
 {
@@ -18,7 +18,6 @@ namespace TransportTasksGenerator.Model
         public int[,] Restrictions => _restrictions;
         public int M { get; set; }
         public int D { get; set; }
-        public Image Graph { get; set; } 
 
         public TransportationTask(int[] senders, int[] recievers, int[,] restricts)
         {
