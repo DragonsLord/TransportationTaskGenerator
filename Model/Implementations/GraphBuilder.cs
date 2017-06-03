@@ -41,7 +41,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 {
                     if (i < 1)
                     {
-                        if (!CheckNode(matrix, j))
+                        if (!CheckNodeColumn(matrix, j) && !CheckNodeRow(matrix, j))
                         {
                             graph.AddNode(GetLabelForNode(j));
                         }
@@ -78,17 +78,29 @@ namespace TransportTasksGenerator.Model.Implementations
             return (System.Drawing.Image)bitmap;
         }
 
-        private bool CheckNode(int[,] matrix,int k)
+        private bool CheckNodeColumn(int[,] matrix,int k)
         {
             int count = 0;
             for (int j = 0; j < matrix.GetLength(0); j++)
             {
-                if ((matrix[k, j] != 0 || matrix[k, j] != 1000000) && ((matrix[j,k] != 0 || matrix[j, k] != 1000000)))
+                if (k < matrix.GetLength(1) && ((matrix[j, k] != 0 || matrix[j, k] != 1000000)))
                 {
                     count++;
                 }
             }
             return matrix.GetLength(0)==count;
+        }
+        private bool CheckNodeRow(int[,] matrix, int k)
+        {
+            int count = 0;
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                if (k < matrix.GetLength(0)  && ((matrix[k, j] != 0 || matrix[k, j] != 1000000)))
+                {
+                    count++;
+                }
+            }
+            return matrix.GetLength(0) == count;
         }
 
         private string GetLabelForNode(int number)

@@ -236,7 +236,7 @@ namespace TransportTasksGenerator.Model.Implementations
             table.HorizontalAlignment = Element.ALIGN_CENTER;
 
             table.AddCell(GetCell(" "));
-            for (int i = 0; i < task.Roads.GetLength(0); i++)
+            for (int i = 0; i < task.Roads.GetLength(1); i++)
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
             }
