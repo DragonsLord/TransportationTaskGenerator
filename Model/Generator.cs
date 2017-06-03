@@ -14,7 +14,7 @@ namespace TransportTasksGenerator.Model
         public ITaskSolver TaskSolver { get; set; } = new TZPPSolver();
         public ISaver Saver { get; set; } = new PdfSaver();
 
-        public void Generate(GenerationParametrs gen_params, string filepath)
+        public void Generate(GenerationParametrs gen_params, string path)
         {
             var tasks = TaskGenerator.Generate(gen_params);
             List<SolvedTask> answers = new List<SolvedTask>();
@@ -22,7 +22,7 @@ namespace TransportTasksGenerator.Model
             {
                 answers.Add(TaskSolver.Solve(task));
             }
-            Saver.Save(answers,gen_params.clearRecieversAmount,gen_params.clearSendersAmount);
+            Saver.Save(answers,gen_params.clearRecieversAmount,gen_params.clearSendersAmount, path);
         }
     }
 }

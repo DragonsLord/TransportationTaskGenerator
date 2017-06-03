@@ -9,6 +9,6 @@ namespace TransportTasksGenerator.Model.Interfaces
 {
     public interface ISaver
     {
-        void Save(IEnumerable<SolvedTask> answers, int clearA, int clearB);
+        void Save(IEnumerable<SolvedTask> answers, int clearA, int clearB, string folderpath);
     }
 }

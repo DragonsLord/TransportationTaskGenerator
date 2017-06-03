@@ -74,7 +74,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     c[j, i] = parametrs.M;
             }
             for (int i = 0; i < parametrs.clearRecieversAmount; i++)
-            {
+            {   
                 for (int j = 0; j < parametrs.totalAmount; j++)
                     c[parametrs.totalAmount - 1 - i, j] = parametrs.M;
             }

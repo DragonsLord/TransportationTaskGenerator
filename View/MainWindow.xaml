@@ -28,6 +28,13 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="2,3,10,0"/>
+            <!--<Setter Property="On" Value="SaveError"/>-->
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <local:GeneratorViewModel x:Key="Genarator"/>
     </Window.Resources>
@@ -53,34 +60,34 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Пункти" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Загальна к-сть пунктів:" FontFamily="Segoe Print" FontSize="13"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TotalAmount}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding TotalAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         <TextBlock Grid.Row="2" Grid.Column="0" Text="К-сть вихідних пунктів:" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SendersAmount}"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SendersAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         <TextBlock Grid.Row="3" Grid.Column="0" Text="К-сть пунктів призначення:" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RecieversAmount}"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RecieversAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         <TextBlock Grid.Row="4" Grid.Column="0" Text='К-сть "чистих" вихідних пунктів:' />
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ClearSendersAmount}"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ClearSendersAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         <TextBlock Grid.Row="5" Grid.Column="0" Text='К-сть "чистих" пунктів призначення:' />
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ClearRecieversAmount}"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding ClearRecieversAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2" Text="Додаткові параметри" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15"/>
         <CheckBox Grid.Row="7" Grid.ColumnSpan="2" Content="Збалансованість" HorizontalAlignment="Center" IsChecked="{Binding IsBalanced}"/>
         <TextBlock Grid.Row="8" Grid.Column="0" Text='Межі значень a та b:' />
         <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" >
             <TextBlock Text="Від "/>
-            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromPostBound}"/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromPostBound, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
             <TextBlock Text="До "/>
-            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToPostBound}"/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToPostBound, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <TextBlock Grid.Row="9" Grid.Column="0" Text='Межі значень елементів матриці:' />
         <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" >
             <TextBlock Text="Від "/>
-            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromRoadBound}"/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding FromRoadBound, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
             <TextBlock Text="До "/>
-            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToRoadBound}"/>
+            <TextBox Margin="5,0" MinWidth="60" Text="{Binding ToRoadBound, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <TextBlock Grid.Row="10" Grid.Column="0" Text='К-сть задач:' />
-        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=TasksAmount}"/>
+        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding TasksAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         <Button Grid.Row="11" Grid.ColumnSpan="2" Content="Згенерувати" Command="{Binding GenerateCommand}" Background="{x:Null}" HorizontalAlignment="Center"/>
     </Grid>
     <!--</StackPanel>-->

@@ -12,20 +12,21 @@ namespace TransportTasksGenerator.Model.Implementations
 {
     class PdfSaver : ISaver
     {
+        private string folder = "Results";
         static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         static readonly iTextSharp.text.Font cellStyle = new iTextSharp.text.Font(baseFont, 16, 0, BaseColor.BLACK);
         private IEnumerable<SolvedTask> answers;
-        public void Save(IEnumerable<SolvedTask> answers,int clearA,int clearB)
+        public void Save(IEnumerable<SolvedTask> answers,int clearA,int clearB,string folderpath)
         {
             this.answers = answers;
+            folder = folderpath;
             SaveTask();
             SaveAnswer(clearA, clearB);
-
 
         }
         public void SaveTask()
         {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}/task.pdf";
+            string path = $"{folder}/task.pdf";
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 Document doc = new Document(PageSize.A4);
@@ -80,7 +81,7 @@ namespace TransportTasksGenerator.Model.Implementations
         }
         private void SaveAnswer(int clearA, int clearB)
         {
-            string path = $"{System.AppDomain.CurrentDomain.BaseDirectory}/answer.pdf";
+            string path = $"{folder}/answer.pdf";
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 Document doc = new Document(PageSize.A4);
