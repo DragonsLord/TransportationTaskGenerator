@@ -18,7 +18,7 @@ namespace TransportTasksGenerator.Model.Implementations
 {
     class GraphBuilder : IGraphBuilder
     {
-        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/font/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
         static readonly iTextSharp.text.Font cellStyle = new iTextSharp.text.Font(baseFont, 16, 0, BaseColor.BLACK);
         private int _countA;
         private int _countB;
@@ -30,17 +30,18 @@ namespace TransportTasksGenerator.Model.Implementations
             _countB = b;
             _totalCount = total;
         }
+
         public System.Drawing.Image Build(int[,] matrix)
         {
             GViewer viewer = new GViewer();
-            Graph graph = new Graph("graph");
+            Graph graph = new Graph("my");
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
                     if (i < 1)
                     {
-                        if (!CheckNode(matrix, j))
+                        if (!CheckNodeColumn(matrix, j) && !CheckNodeRow(matrix, j))
                         {
                             graph.AddNode(GetLabelForNode(j));
                         }
@@ -55,49 +56,61 @@ namespace TransportTasksGenerator.Model.Implementations
             List<Node> sender = new List<Node>();
             for (int i = 0; i < _countA; i++)
             {
-                sender.Add(graph.FindNode((Convert.ToChar(65).ToString() + i).ToString()));
+                sender.Add(graph.FindNode((Convert.ToChar(65).ToString() + (i + 1)).ToString()));
             }
             graph.LayerConstraints.PinNodesToSameLayer(sender.ToArray());
             sender = new List<Node>();
             for (int i = 0; i < _countB; i++)
             {
-                sender.Add(graph.FindNode((Convert.ToChar(66).ToString() + i).ToString()));
+                sender.Add(graph.FindNode((Convert.ToChar(66).ToString() + (i + 1)).ToString()));
             }
             graph.LayerConstraints.PinNodesToSameLayer(sender.ToArray());
 
             graph.Attr.LayerDirection = LayerDirection.LR;
-            GraphRenderer renderer = new GraphRenderer(graph);
-            renderer.CalculateLayout();
+
 
             int width = 1920;
             Bitmap bitmap = new Bitmap(width, 1080, PixelFormat.Format32bppPArgb);
+            GraphRenderer renderer = new GraphRenderer(graph);
+            renderer.CalculateLayout();
             renderer.Render(bitmap);
+
             return (System.Drawing.Image)bitmap;
         }
-        private bool CheckNode(int[,] matrix,int k)
+
+        private bool CheckNodeColumn(int[,] matrix,int k)
         {
             int count = 0;
             for (int j = 0; j < matrix.GetLength(0); j++)
             {
-                if ((matrix[k, j] != 0 || matrix[k, j] != 1000000) && ((matrix[j,k] != 0 || matrix[j, k] != 1000000)))
+                if (k < matrix.GetLength(1) && ((matrix[j, k] != 0 || matrix[j, k] != 1000000)))
                 {
                     count++;
                 }
             }
             return matrix.GetLength(0)==count;
         }
-        private string GetLabelForNode(int number)
+        private bool CheckNodeRow(int[,] matrix, int k)
         {
-            if (number<_countA) return (Convert.ToChar(65).ToString() + number).ToString();
-
-            else if (_totalCount - _countB <= number) return (Convert.ToChar(66).ToString() + (number - (_totalCount - _countB))).ToString();
-
-            else return (Convert.ToChar(67).ToString() + (number-_countA)).ToString();
+            int count = 0;
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                if (k < matrix.GetLength(0)  && ((matrix[k, j] != 0 || matrix[k, j] != 1000000)))
+                {
+                    count++;
+                }
+            }
+            return matrix.GetLength(0) == count;
         }
 
+        private string GetLabelForNode(int number)
+        {
+            if (number<_countA) return (Convert.ToChar(65).ToString() + (number + 1)).ToString();
 
+            else if (_totalCount - _countB <= number) return (Convert.ToChar(66).ToString() + (number + 1 - (_totalCount - _countB))).ToString();
 
-
+            else return (Convert.ToChar(67).ToString() + (number + 1 -_countA)).ToString();
+        }
 
         private void GeneratePdf(int[,] matrix,string filename)
         {
@@ -124,26 +137,18 @@ namespace TransportTasksGenerator.Model.Implementations
                 table.AddCell(GetCell(" "));
                 for (int i = 0; i < matrix.GetLength(0); i++)
                 {
-                    table.AddCell(GetCell(Convert.ToChar(65 + i).ToString()));
+                    table.AddCell(GetCell(Convert.ToChar(65 + i + 1).ToString()));
                 }
                 for (int i = 0; i < matrix.GetLength(0); i++)
                 {
                     for (int j = 0; j < matrix.GetLength(1); j++)
                     {
-                        if (j<1)
-                        {
-                            table.AddCell(GetCell(Convert.ToChar(65 + i).ToString()));
-                        }
-                        if (matrix[i, j]== 1000000)
-                        {
+                        //add cell with node name
+                        if (j<1) table.AddCell(GetCell(Convert.ToChar(65 + i + 1).ToString()));
 
-                            table.AddCell(GetCell("M"));
-                        }
-                        else
-                        {
-                            table.AddCell(GetCell(matrix[i, j].ToString()));
-                        }
-                        
+                        //check weight of edge for ignore edge with M number 
+                        if (matrix[i, j]== 1000000) table.AddCell(GetCell("M"));
+                        else table.AddCell(GetCell(matrix[i, j].ToString()));
                     }
                 }
                 doc.Add(table);
@@ -151,10 +156,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 writer.Close();
             }
         }
-        private PdfPCell GetCell(string text)
-        {
-            return new PdfPCell(new Phrase(text, cellStyle)) { PaddingTop = 10, PaddingBottom = 10, HorizontalAlignment = Element.ALIGN_CENTER };
-        }
         
+        private PdfPCell GetCell(string text) => new PdfPCell(new Phrase(text, cellStyle)) { PaddingTop = 10, PaddingBottom = 10, HorizontalAlignment = Element.ALIGN_CENTER };
     }
 }
