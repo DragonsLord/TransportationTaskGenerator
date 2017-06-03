@@ -13,9 +13,9 @@ namespace TransportTasksGenerator.Model.Implementations
     class PdfSaver : ISaver
     {
         private string folder = "Results";
-        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}/OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-        static readonly Font cellStyle = new Font(baseFont, 12, 0, BaseColor.BLACK);
-        static readonly Font paragraphStyle = new Font(baseFont, 14, 1, BaseColor.BLACK);
+        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        static readonly Font cellStyle = new Font(baseFont, 10, 0, BaseColor.BLACK);
+        static readonly Font paragraphStyle = new Font(baseFont, 12, 1, BaseColor.BLACK);
         private IEnumerable<SolvedTask> answers;
         public void Save(IEnumerable<SolvedTask> answers,int clearA,int clearB,string folderpath)
         {
@@ -42,7 +42,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 GraphBuilder builder;
                 foreach (var single in answers)
                 {
-                    builder = new GraphBuilder(single.Task.Senders.Length, single.Task.Recievers.Length, single.Task.Restrictions.GetLength(1));
+                    builder = new GraphBuilder(single.Task.Senders.Length, single.Task.Recievers.Length, single.Task.Restrictions.GetLength(0), single.Task.Restrictions.GetLength(1));
                     p1 = new Paragraph();
                     p1.Alignment = Element.ALIGN_LEFT;
                     p1.Add(new Chunk(("Варіант #" + variantNumber).ToUpper(), new Font(baseFont, 16, 1, BaseColor.BLACK)));
@@ -108,7 +108,7 @@ namespace TransportTasksGenerator.Model.Implementations
                 foreach (var single in answers)
                 {
                     int buffer = single.Task.Senders.ToList().Sum();
-                    builder = new GraphBuilder(single.Task.Senders.Length, single.Task.Recievers.Length, single.Task.Restrictions.GetLength(1));
+                    builder = new GraphBuilder(single.Task.Senders.Length, single.Task.Recievers.Length, single.Task.Restrictions.GetLength(0), single.Task.Restrictions.GetLength(1));
                     p1 = new Paragraph();
                     p1.Alignment = Element.ALIGN_LEFT;
                     p1.Add(new Chunk(("Варіант #" + variantNumber).ToUpper(), new Font(baseFont, 16, 1, BaseColor.BLACK)));
@@ -175,10 +175,12 @@ namespace TransportTasksGenerator.Model.Implementations
             }
            
             table.AddCell(GetCell(" "));
-            foreach (var i in task.GetRowsToDraw())
+            var rows = task.GetRowsToDraw();
+            var columns = task.GetColumnsToDraw();
+            foreach (var i in rows)
             {
                 table.AddCell(GetCell(GetLabelForNode(i, task)));
-                foreach (var j in task.GetColumnsToDraw())
+                foreach (var j in columns)
                 {
                     if (task.BalancedMatrix[i, j] == 1000000)
                     {
@@ -190,40 +192,16 @@ namespace TransportTasksGenerator.Model.Implementations
                         table.AddCell(GetCell(task.BalancedMatrix[i, j].ToString()));
                     }
                 }
-                if (i < task.Senders.Length)
-                {
-                    if (i < a)
-                    {
-                        table.AddCell(GetCell(task.Senders[i].ToString()));
-                    }
-                    else
-                    {
-                        table.AddCell(GetCell((task.Senders[i] + buffer).ToString()));
-                    }
-                }
-                else
-                {
-                    table.AddCell(GetCell(buffer.ToString()));
-                }
+                if (columns.Contains(i) || task.Senders[i] - buffer <= 0)
+                    table.AddCell(GetCell(task.Senders[i].ToString()));
+                else table.AddCell(GetCell((task.Senders[i] - buffer).ToString()));
             }
             table.AddCell(GetCell(" "));
-            foreach (var i in task.GetColumnsToDraw())
+            foreach (var i in columns)
             {
-                if (i >= task.BalancedMatrix.GetLength(1) - task.Recievers.Length)
-                {
-                    if (i >= task.BalancedMatrix.GetLength(1) - b)
-                    {
-                        table.AddCell(GetCell((task.Recievers[i - task.BalancedMatrix.GetLength(1) + task.Task.Recievers.Length]).ToString()));
-                    }
-                    else
-                    {
-                        table.AddCell(GetCell((task.Recievers[i - task.BalancedMatrix.GetLength(1) + task.Recievers.Length] + buffer).ToString()));
-                    }
-                }
-                else
-                {
-                    table.AddCell(GetCell(buffer.ToString()));
-                }
+                if (rows.Contains(i) || task.Recievers[i] - buffer <= 0)
+                    table.AddCell(GetCell(task.Recievers[i].ToString()));
+                else table.AddCell(GetCell((task.Recievers[i] - buffer).ToString()));
             }
             table.AddCell(GetCell(" "));
             return table;
@@ -263,9 +241,9 @@ namespace TransportTasksGenerator.Model.Implementations
 
         private string GetLabelForNode(int number,SolvedTask task)
         {
-            int fict = task.Task.Restrictions.GetLength(0) > task.Task.Restrictions.GetLength(1) ? task.Task.Restrictions.GetLength(0) : task.Task.Restrictions.GetLength(1);
+            int fict = task.Task.Restrictions.GetLength(0);
 
-            if (number==fict ) return(Convert.ToChar(70).ToString() + 1).ToString();
+            if (number==fict ) return(Convert.ToChar(70).ToString()).ToString();
             //Senders
             else if (number < task.Task.Senders.Length) return (Convert.ToChar(65).ToString() + (number + 1)).ToString();
             //Intermediate
