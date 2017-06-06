@@ -13,7 +13,7 @@ namespace TransportTasksGenerator.Model.Implementations
     class PdfSaver : ISaver
     {
         private string folder = "Results";
-        static readonly BaseFont baseFont = BaseFont.CreateFont($"{ System.AppDomain.CurrentDomain.BaseDirectory}OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        static readonly BaseFont baseFont = BaseFont.CreateFont("OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, Properties.Resources.OpenSans_Regular, null);
         static readonly Font cellStyle = new Font(baseFont, 10, 0, BaseColor.BLACK);
         static readonly Font paragraphStyle = new Font(baseFont, 12, 1, BaseColor.BLACK);
         private IEnumerable<SolvedTask> answers;
@@ -79,7 +79,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     doc.Add(GetListOfEdges(single));
 
                     Image img = Image.GetInstance(builder.Build(single.Task.Restrictions), System.Drawing.Imaging.ImageFormat.Png);
-                    img.ScaleToFit(doc.PageSize);
+                    img.ScaleToFit((float)(doc.PageSize.Width * 0.7), (float)(doc.PageSize.Height * 0.7));
                     img.SpacingBefore = 30;
                     img.Alignment = Element.ALIGN_CENTER;
                     doc.Add(img);
@@ -127,7 +127,7 @@ namespace TransportTasksGenerator.Model.Implementations
                     doc.Add(new Paragraph(new Chunk(("Z = " + single.Value), paragraphStyle)) { SpacingAfter = 20 });
 
                     Image img = Image.GetInstance(builder.Build(single.Roads), System.Drawing.Imaging.ImageFormat.Png);
-                    img.ScaleToFit((float)(doc.PageSize.Width*0.8),(float)(doc.PageSize.Height*0.8));
+                    img.ScaleToFit((float)(doc.PageSize.Width*0.7),(float)(doc.PageSize.Height*0.7));
                     img.SpacingBefore = 0;
                     img.Alignment = Element.ALIGN_CENTER;
                     doc.Add(img);
@@ -160,7 +160,7 @@ namespace TransportTasksGenerator.Model.Implementations
         }
         private PdfPCell GetCell(string text)
         {
-            return new PdfPCell(new Phrase(text, cellStyle)) { PaddingTop = 10, PaddingBottom = 10, HorizontalAlignment = Element.ALIGN_CENTER };
+            return new PdfPCell(new Phrase(text, cellStyle)) { PaddingTop = 3, PaddingBottom = 3, HorizontalAlignment = Element.ALIGN_CENTER };
         }
         private PdfPTable GetTable(SolvedTask task,int a,int b,int buffer)
         {

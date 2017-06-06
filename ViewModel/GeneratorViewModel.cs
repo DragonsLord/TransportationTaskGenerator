@@ -163,12 +163,21 @@ namespace TransportTasksGenerator.ViewModel
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-                var result = dialog.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK) {
-                    MessengerInstance.Send<WorkerStatus>(WorkerStatus.Working);
-                    await Task.Run(() => _generator.Generate(_parameters, dialog.SelectedPath));
+                try
+                {
+                    var result = dialog.ShowDialog();
+                    if (result == System.Windows.Forms.DialogResult.OK)
+                    {
+                        MessengerInstance.Send<WorkerStatus>(WorkerStatus.Working);
+                        await Task.Run(() => _generator.Generate(_parameters, dialog.SelectedPath));
+                        MessengerInstance.Send<WorkerStatus>(WorkerStatus.Finished);
+                        MessengerInstance.Send<string>("Генерація завершена");
+                    }
+                }
+                catch (Exception ex)
+                {
                     MessengerInstance.Send<WorkerStatus>(WorkerStatus.Finished);
-                    MessengerInstance.Send<string>("Генерація завершена");
+                    MessengerInstance.Send<string>(ex.Message);
                 }
             }
         }
