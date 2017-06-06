@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
+using TransportTasksGenerator.Model;
 
 namespace TransportTasksGenerator.Model.Interfaces
 {
-    public interface IGraphBuilder
+    public interface ISaver
     {
-        System.Drawing.Image Build(int[,] matrix);
+        void Save(IEnumerable<SolvedTask> answers, int clearA, int clearB, string folderpath);
     }
 }

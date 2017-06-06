@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TransportTasksGenerator.ViewModel;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace TransportTasksGenerator
 {
@@ -23,6 +25,13 @@ namespace TransportTasksGenerator
         public MainWindow()
         {
             InitializeComponent();
+            Messenger.Default.Register<string>(this, m => MessageBox.Show(m));
+            Messenger.Default.Register<WorkerStatus>(this, s =>
+            {
+                if (s == WorkerStatus.Working)
+                    Cursor = Cursors.Wait;
+                else Cursor = Cursors.Arrow;
+            });
         }
     }
 }
